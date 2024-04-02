@@ -95,7 +95,24 @@ impl Writer {
         }
     }
     fn new_line(&mut self) {
-        // TODO
+        for row in 1..BUFFER_HEIGHT {
+            for col in 0..BUFFER_WIDTH {
+                let character = self.buffer.chars[row][col].read();
+                self.buffer.chars[row - 1][col].write(character);
+            }
+        }
+        self.clear_row(BUFFER_HEIGHT - 1);
+        self.column_position = 0;
+    }
+
+    fn clear_row(&mut self, row: usize) {
+        let empty_char = ScreenChar {
+            ascii_character: b' ',
+            color_code: self.color_code,
+        };
+        for col in 0..BUFFER_WIDTH {
+            self.buffer.chars[row][col].write(empty_char);
+        }
     }
 }
 
@@ -110,5 +127,6 @@ pub fn print_something() {
     };
     // This will be printed "Hullo, W  rld!" with two boxes, as special chars are two bytes in UTF8.
     write!(writer, "Hullo, Wörld! ").unwrap();
+    writer.new_line();
     write!(writer, "Numbers! {} and {}", 42, 1.0 / 3.0).unwrap();
 }
