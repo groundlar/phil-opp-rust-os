@@ -1,5 +1,6 @@
 use core::fmt;
 use lazy_static::lazy_static;
+use spin::Mutex;
 use volatile::Volatile;
 
 #[allow(dead_code)]
@@ -118,7 +119,7 @@ impl Writer {
 }
 
 lazy_static! {
-    pub static ref WRITER: Writer = Writer {
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
             column_position: 0,
             color_code: ColorCode::new(Color::Green, Color::Black),
             // Cast buffer location to mutable raw pointer, then recast to buffer.
@@ -127,7 +128,7 @@ lazy_static! {
             // see feature(const_mut_refs) and https://github.com/rust-lang/rust/issues/57349
             // this prevents e.g. `unsafe { &mut *(0xb8000 as *mut Buffer) }`
             buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-        };
+        });
 }
 
 pub fn print_something() {
