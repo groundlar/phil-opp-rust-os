@@ -10,3 +10,5 @@ edition = "2021"
 # TODO follow migration guide:
 #   https://github.com/rust-osdev/bootloader/blob/b394598ddface754dbb3866c7e1498d9b4a41c95/docs/migration/v0.9.md
 bootloader = "0.9"
+# TODO newer versions may not be compatible with OS vga text post
+volatile = "0.2.6"
