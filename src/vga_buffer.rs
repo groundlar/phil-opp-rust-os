@@ -130,18 +130,3 @@ lazy_static! {
             buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
         });
 }
-
-pub fn print_something() {
-    use core::fmt::Write;
-    let mut writer = Writer {
-        column_position: 0,
-        color_code: ColorCode::new(Color::Green, Color::Black),
-        // Cast buffer location to mutable raw pointer, then recast to buffer.
-        // Requires unsafe as comiler can't verify that the raw pointer is valid.
-        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    };
-    // This will be printed "Hullo, W  rld!" with two boxes, as special chars are two bytes in UTF8.
-    write!(writer, "Hullo, Wörld! ").unwrap();
-    writer.new_line();
-    write!(writer, "Numbers! {} and {}", 42, 1.0 / 3.0).unwrap();
-}
