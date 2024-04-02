@@ -1,3 +1,4 @@
+use core::fmt;
 use volatile::Volatile;
 
 #[allow(dead_code)]
@@ -57,18 +58,11 @@ pub struct Writer {
     buffer: &'static mut Buffer,
 }
 
-pub fn print_something() {
-    let mut writer = Writer {
-        column_position: 0,
-        color_code: ColorCode::new(Color::Green, Color::Black),
-        // Cast buffer location to mutable raw pointer, then recast to buffer.
-        // Requires unsafe as comiler can't verify that the raw pointer is valid.
-        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    };
-    writer.write_byte(b'H');
-    writer.write_string("ullo ");
-    // This will be printed "W  rld!" with two boxes, as special chars are two bytes in UTF8.
-    writer.write_string("Wörld!");
+impl fmt::Write for Writer {
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        self.write_string(s);
+        Ok(())
+    }
 }
 
 impl Writer {
@@ -103,4 +97,18 @@ impl Writer {
     fn new_line(&mut self) {
         // TODO
     }
+}
+
+pub fn print_something() {
+    use core::fmt::Write;
+    let mut writer = Writer {
+        column_position: 0,
+        color_code: ColorCode::new(Color::Green, Color::Black),
+        // Cast buffer location to mutable raw pointer, then recast to buffer.
+        // Requires unsafe as comiler can't verify that the raw pointer is valid.
+        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+    };
+    // This will be printed "Hullo, W  rld!" with two boxes, as special chars are two bytes in UTF8.
+    write!(writer, "Hullo, Wörld! ").unwrap();
+    write!(writer, "Numbers! {} and {}", 42, 1.0 / 3.0).unwrap();
 }
