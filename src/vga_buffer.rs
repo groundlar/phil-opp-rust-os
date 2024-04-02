@@ -1,4 +1,5 @@
 use core::fmt;
+use lazy_static::lazy_static;
 use volatile::Volatile;
 
 #[allow(dead_code)]
@@ -31,7 +32,7 @@ struct ColorCode(u8);
 
 impl ColorCode {
     /// Note: this will behave oddly with backgrounds > 8 due to the blink bit.
-    fn new(foreground: Color, background: Color) -> ColorCode {
+    const fn new(foreground: Color, background: Color) -> ColorCode {
         ColorCode((background as u8) << 4 | (foreground as u8))
     }
 }
@@ -114,6 +115,19 @@ impl Writer {
             self.buffer.chars[row][col].write(empty_char);
         }
     }
+}
+
+lazy_static! {
+    pub static ref WRITER: Writer = Writer {
+            column_position: 0,
+            color_code: ColorCode::new(Color::Green, Color::Black),
+            // Cast buffer location to mutable raw pointer, then recast to buffer.
+            // Requires unsafe as comiler can't verify that the raw pointer is valid.
+            // Dereferincing raw mutable pointers in statics is unstable,
+            // see feature(const_mut_refs) and https://github.com/rust-lang/rust/issues/57349
+            // this prevents e.g. `unsafe { &mut *(0xb8000 as *mut Buffer) }`
+            buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+        };
 }
 
 pub fn print_something() {

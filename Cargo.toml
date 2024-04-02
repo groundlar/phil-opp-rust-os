@@ -12,3 +12,7 @@ edition = "2021"
 bootloader = "0.9"
 # TODO newer versions may not be compatible with OS vga text post
 volatile = "0.2.6"
+
+[dependencies.lazy_static]
+version = "1.4.0"
+features = ["spin_no_std"]
