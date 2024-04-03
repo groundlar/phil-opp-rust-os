@@ -7,12 +7,31 @@
 use core::panic::PanicInfo;
 mod vga_buffer;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u32)]
+pub enum QemuExitCode {
+    // Value taken from Cargo.toml
+    Success = 0x10,
+    Failure = 0x11,
+}
+
+pub fn exit_qemu(exit_code: QemuExitCode) {
+    use x86_64::instructions::port::Port;
+
+    unsafe {
+        // Port taken from isa-debug-exit device in Cargo.toml.
+        let mut port = Port::new(0xf4);
+        port.write(exit_code as u32);
+    }
+}
+
 #[cfg(test)]
 pub fn test_runner(tests: &[&dyn Fn()]) {
     println!("Running {} tests", tests.len());
     for test in tests {
         test();
     }
+    exit_qemu(QemuExitCode::Success);
 }
 
 #[panic_handler]
@@ -31,10 +50,9 @@ pub extern "C" fn _start() -> ! {
     loop {}
 }
 
-
 #[test_case]
 fn it_works() {
     print!("it works... ");
-    assert_eq!(1,1);
+    assert_eq!(1, 1);
     println!("[ok]")
 }

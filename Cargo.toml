@@ -15,7 +15,16 @@ bootloader = "0.9"
 spin = "0.9.8"
 # TODO newer versions may not be compatible with OS vga text post
 volatile = "0.2.6"
+# Note: tutorial uses 0.14.2
+x86_64 = "0.15.1"
 
 [dependencies.lazy_static]
 version = "1.4.0"
 features = ["spin_no_std"]
+
+[package.metadata.bootimage]
+# Specify debug device for testing on guest, as well as IO port parameters
+# Port 0xf4 is generally unused on x86, see https://wiki.osdev.org/I/O_Ports#The_list
+test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04"]
+# When a value is written to the port, QEMU will exit with `(value << 1) | 1`
+test-success-exit-code = 33 # (0x10 << 1) | 1
