@@ -5,6 +5,7 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
+mod serial;
 mod vga_buffer;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -27,7 +28,7 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 
 #[cfg(test)]
 pub fn test_runner(tests: &[&dyn Fn()]) {
-    println!("Running {} tests", tests.len());
+    serial_println!("Running {} tests", tests.len());
     for test in tests {
         test();
     }
@@ -52,7 +53,7 @@ pub extern "C" fn _start() -> ! {
 
 #[test_case]
 fn it_works() {
-    print!("it works... ");
+    serial_print!("it works... ");
     assert_eq!(1, 1);
-    println!("[ok]")
+    serial_println!("[ok]");
 }
