@@ -62,13 +62,8 @@ pub extern "C" fn _start() -> ! {
 }
 
 #[test_case]
-fn it_works() {
+fn test_it_works() {
     assert_eq!(1, 1);
-}
-
-#[test_case]
-fn it_fails() {
-    assert_eq!(0, 1);
 }
 
 pub trait Testable {
