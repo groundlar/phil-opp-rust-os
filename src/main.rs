@@ -24,9 +24,14 @@ fn panic(info: &PanicInfo) -> ! {
 pub extern "C" fn _start() -> ! {
     println!("Hullo, Wörld!");
 
+    phil_opp_rust_os::init();
+    // Breakpoint exception.
+    x86_64::instructions::interrupts::int3();
+
     #[cfg(test)]
     test_main();
 
+    println!("We didn't crash!");
     loop {}
 }
 

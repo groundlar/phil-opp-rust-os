@@ -71,3 +71,7 @@ pub extern "C" fn _start() -> ! {
     test_main();
     loop {}
 }
+
+pub fn init() {
+    interrupts::init_idt();
+}
