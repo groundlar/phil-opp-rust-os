@@ -25,8 +25,11 @@ pub extern "C" fn _start() -> ! {
     println!("Hullo, Wörld!");
 
     phil_opp_rust_os::init();
-    // Breakpoint exception.
-    x86_64::instructions::interrupts::int3();
+
+    // Trigger page fault by assigning random memory.
+    unsafe {
+        *(0xdeadbeef as *mut u8) = 42;
+    }
 
     #[cfg(test)]
     test_main();
