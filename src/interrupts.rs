@@ -65,7 +65,7 @@ extern "x86-interrupt" fn double_fault_handler(
 }
 
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    // TODO this can deadlock on global WRITER with non-interrupt writes.
+    // NOTE: this can deadlock on global WRITER with non-interrupt prints.
     print!(".");
     unsafe {
         PICS.lock()
