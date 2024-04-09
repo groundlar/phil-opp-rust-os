@@ -19,6 +19,10 @@ volatile = "0.2.6"
 x86_64 = "0.15.1"
 # Note: tutorial uses 0.2.0
 uart_16550 = "0.3.0"
+# See https://wiki.osdev.org/8259_PIC
+# TODO replace with APIC
+# Note: Tutorial uses 0.10.1
+pic8259 = "0.11.0"
 
 [dependencies.lazy_static]
 version = "1.4.0"
