@@ -5,7 +5,7 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
-use phil_opp_rust_os::println;
+use phil_opp_rust_os::{print, println};
 
 #[cfg(not(test))]
 #[panic_handler]
@@ -30,7 +30,10 @@ pub extern "C" fn _start() -> ! {
     test_main();
 
     println!("We didn't crash!");
-    loop {}
+    loop {
+        // Illustrate deadlock with TODO in interrupts
+        print!("-");
+    }
 }
 
 #[test_case]
