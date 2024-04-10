@@ -11,7 +11,7 @@ use phil_opp_rust_os::{print, println};
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    phil_opp_rust_os::hlt_loop();
 }
 
 #[cfg(test)]
@@ -30,10 +30,7 @@ pub extern "C" fn _start() -> ! {
     test_main();
 
     println!("We didn't crash!");
-    loop {
-        // Illustrate deadlock with TODO in interrupts
-        print!("-");
-    }
+    phil_opp_rust_os::hlt_loop();
 }
 
 #[test_case]
