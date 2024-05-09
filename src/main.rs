@@ -26,6 +26,12 @@ pub extern "C" fn _start() -> ! {
 
     phil_opp_rust_os::init();
 
+    // kablooie
+    let ptr = 0xDEADBEEF as *mut u8;
+    unsafe {
+        *ptr = 42;
+    }
+
     #[cfg(test)]
     test_main();
 
