@@ -6,8 +6,8 @@
 
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use phil_opp_rust_os::{print, println};
-use x86_64::registers::control::Cr3;
+use phil_opp_rust_os::{memory::active_level_4_table, print, println};
+use x86_64::{registers::control::Cr3, VirtAddr};
 
 #[cfg(not(test))]
 #[panic_handler]
@@ -29,13 +29,14 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     phil_opp_rust_os::init();
 
-    let (level_4_page_table, _) = Cr3::read();
-    println!(
-        "Level 4 page table at: {:?}",
-        level_4_page_table.start_address()
-    );
-    // PhysAddr(0x1000)
-    // We can't access this directly for obvious reasons.
+    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    let l4_table = unsafe { active_level_4_table(phys_mem_offset) };
+    for (i, entry) in l4_table.iter().enumerate() {
+        // These should map to different L3 entries.
+        if !entry.is_unused() {
+            println!("L4 Entry {}: {:?}", i, entry);
+        }
+    }
 
     #[cfg(test)]
     test_main();
