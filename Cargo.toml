@@ -9,7 +9,9 @@ edition = "2021"
 # `cargo bootimage` doesn't work with most recent 11.7
 # TODO follow migration guide:
 #   https://github.com/rust-osdev/bootloader/blob/b394598ddface754dbb3866c7e1498d9b4a41c95/docs/migration/v0.9.md
-bootloader = "0.9"
+# Map all physical memory to an unused region of the virtual address space.
+# x86_64 can use huge pages to reduce the overhead of this strategy.
+bootloader = { version = "0.9", features = ["map_physical_memory"] }
 # Note: tutorial uses 0.5.2
 # Use spinlock since our kernel doesn't have support for Mutexes
 spin = "0.9.8"

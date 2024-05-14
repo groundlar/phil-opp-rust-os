@@ -4,6 +4,7 @@
 #![test_runner(phil_opp_rust_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 use phil_opp_rust_os::{print, println};
 use x86_64::registers::control::Cr3;
@@ -21,8 +22,9 @@ fn panic(info: &PanicInfo) -> ! {
     phil_opp_rust_os::test_panic_handler(info)
 }
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+entry_point!(kernel_main);
+
+fn kernel_main(boot_info: &'static BootInfo) -> ! {
     println!("Hullo, Wörld!");
 
     phil_opp_rust_os::init();
